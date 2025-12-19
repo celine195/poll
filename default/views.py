@@ -44,27 +44,27 @@ class PollEdit(UpdateView):
         fields = '__all__' #['subject','desc']        
 
         def get_success_url(self):
-            return reverse_lazy('poll.view', kwargs={'pk': self.object.id})
+            return reverse_lazy('poll_list')
      
 class OptionCreate(CreateView):
      model=Option
      fields=['title']
      def form_valid(self, form):
          form.instance.poll_id = self.kwargs['pid']
-         return super().form_vaild(form)
+         return super().form_valid(form)
 
      def get_success_url(self):
-        return reverse_lazy('poll.view', kwargs={'pk': self.kwargs['pid']})
+        return reverse_lazy('poll_view', kwargs={'pk': self.kwargs['pid']})
 class OptionEdit(UpdateView):
      model=Option
      fields=["title"]
      pk_url_kwarg ='oid'
 
      def get_success_url(self):
-          return reverse_lazy('poll.view', kwargs={'pk': self.object.poll_id})
+          return reverse_lazy('poll_view', kwargs={'pk': self.object.poll_id})
 class PollDelete(DeleteView):
      model=Poll
-     success_ur=reverse_lazy('poll_list')
+     success_url=reverse_lazy('poll_list')
 class OptionDelete(DeleteView):
      model= Option
 

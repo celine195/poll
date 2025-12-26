@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Poll, Option
 from django.views.generic import ListView, DetailView, RedirectView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 def poll_list(req):
@@ -34,19 +35,19 @@ class PollVote(RedirectView):
         
         return reverse('poll_view',args=[option.poll_id])
     
-class PollCreate(CreateView):
+class PollCreate(LoginRequiredMixin, CreateView):
         model=Poll
         fields = '__all__' #['subject','desc']
         success_url= reverse_lazy('poll_list')
          
-class PollEdit(UpdateView):
+class PollEdit(LoginRequiredMixin, UpdateView):
         model=Poll
         fields = '__all__' #['subject','desc']        
 
         def get_success_url(self):
             return reverse_lazy('poll_list')
      
-class OptionCreate(CreateView):
+class OptionCreate(LoginRequiredMixin, CreateView):
      model=Option
      fields=['title']
      def form_valid(self, form):
@@ -55,17 +56,17 @@ class OptionCreate(CreateView):
 
      def get_success_url(self):
         return reverse_lazy('poll_view', kwargs={'pk': self.kwargs['pid']})
-class OptionEdit(UpdateView):
+class OptionEdit(LoginRequiredMixin, UpdateView):
      model=Option
      fields=["title"]
      pk_url_kwarg ='oid'
 
      def get_success_url(self):
           return reverse_lazy('poll_view', kwargs={'pk': self.object.poll_id})
-class PollDelete(DeleteView):
+class PollDelete(LoginRequiredMixin, DeleteView):
      model=Poll
      success_url=reverse_lazy('poll_list')
-class OptionDelete(DeleteView):
+class OptionDelete(LoginRequiredMixin, DeleteView):
      model= Option
 
      def get_success_url(self):
